@@ -1,8 +1,8 @@
 package model
 
-type Transacao struct {
-	Valor    int    `json: valor`
-	Tipo     string `json: tipo`
-	Desc     int    `json: descricao`
-	CreateAt string `json: realizada_em`
+type Tansaction struct {
+	Value       int    `json:"valor"`
+	Type        string `json:"tipo"`
+	Description string `json:"descricao"`
+	CreateAt    string `json:"realizada_em"`
 }

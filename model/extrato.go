@@ -1,6 +1,6 @@
 package model
 
-type Extrato struct {
-	Saldo      Saldo       `json: saldo`
-	Transacoes []Transacao `json: ultimas_transacoes`
+type Statement struct {
+	Balance     Balance      `json:"saldo"`
+	Tansactions []Tansaction `json:"ultimas_transacoes"`
 }

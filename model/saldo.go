@@ -1,7 +1,7 @@
 package model
 
-type Saldo struct {
-	Total int    `json: total`
-	Date  string `json: tipo`
-	Limit int    `json: limite`
+type Balance struct {
+	Total int    `json:"total"`
+	Limit int    `json:"limite"`
+	Date  string `json:"data_extrato"`
 }
