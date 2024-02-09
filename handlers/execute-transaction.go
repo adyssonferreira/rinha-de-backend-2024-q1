@@ -52,7 +52,12 @@ func ExecuteTransaction(c *fiber.Ctx) error {
 
 	}
 
-	repository.UpdateBalance(client.Id, client.Balance)
+	_, err = repository.UpdateBalance(client.Id, client.Balance)
+
+	// Internal error
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "Internal error")
+	}
 
 	response := Response{
 		Limit:   client.Limit,
