@@ -16,6 +16,9 @@ type Payload struct {
 	Description string `json:"descricao"`
 }
 
+const DEBIT_TRANSACTION = "d"
+const CREDIT_TRANSACTION = "c"
+
 func ExecuteTransaction(c *fiber.Ctx) error {
 
 	client_id := c.Params("id")
@@ -23,20 +26,26 @@ func ExecuteTransaction(c *fiber.Ctx) error {
 	var payload Payload
 	c.BodyParser(&payload)
 
-	client := repository.FindClientById(client_id)
+	client, err := repository.FindClientById(client_id)
 
-	if client == nil {
-		return c.SendStatus(404)
+	// Client not found
+	if client == nil && err == nil {
+		return fiber.NewError(fiber.StatusNotFound, "Client not found")
 	}
 
-	if payload.Type == "c" {
+	// Internal error
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "Internal error")
+	}
+
+	if payload.Type == CREDIT_TRANSACTION {
 		client.Balance += payload.Value
-	} else if payload.Type == "d" {
+	} else if payload.Type == DEBIT_TRANSACTION {
 
 		newBalance := client.Balance - payload.Value
 
 		if newBalance < 0 && -1*newBalance > client.Limit {
-			return c.SendStatus(422)
+			return fiber.NewError(fiber.StatusUnprocessableEntity, "Unprocessable Entity")
 		}
 
 		client.Balance = newBalance
