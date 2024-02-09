@@ -52,6 +52,13 @@ func ExecuteTransaction(c *fiber.Ctx) error {
 
 	}
 
+	_, err = repository.CreateTransaction(client.Id, payload.Value, payload.Type, payload.Description)
+
+	// Internal error
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "Error on create transation")
+	}
+
 	_, err = repository.UpdateBalance(client.Id, client.Balance)
 
 	// Internal error

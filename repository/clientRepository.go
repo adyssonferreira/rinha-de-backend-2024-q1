@@ -28,7 +28,7 @@ func FindClientById(id string) (*model.Client, error) {
 	return &client, nil
 }
 
-func UpdateBalance(client_id string, balance int) (sql.Result, error) {
+func UpdateBalance(client_id int, balance int) (sql.Result, error) {
 
 	db, err := OpenDB()
 
