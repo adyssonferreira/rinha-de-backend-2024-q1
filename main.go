@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/adyssonferreira/rinha-de-backend-2024-q1/handlers"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
@@ -14,15 +14,12 @@ func main() {
 		ServerHeader: "Fiber",
 	})
 
-	app.Get("/clientes/:id/extrato", func(c fiber.Ctx) error {
+	app.Get("/clientes/:id/extrato", func(c *fiber.Ctx) error {
 		statement := handlers.GetStatement()
 		return c.JSON(statement)
 	})
 
-	app.Post("/clientes/:id/transacoes", func(c fiber.Ctx) error {
-		transaction := handlers.ExecuteTransaction()
-		return c.JSON(transaction)
-	})
+	app.Post("/clientes/:id/transacoes", handlers.ExecuteTransaction)
 
 	app.Listen(":8082")
 }
