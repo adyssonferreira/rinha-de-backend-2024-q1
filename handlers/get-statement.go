@@ -1,31 +1,41 @@
 package handlers
 
-import "github.com/adyssonferreira/rinha-de-backend-2024-q1/model"
+import (
+	"time"
 
-func GetStatement() model.Statement {
-	statement := model.Statement{
-		Balance: model.Balance{
-			Total: 1220,
-			Date:  "2024-01-17T02:34:41.217753Z",
-			Limit: 100000,
-		},
+	"github.com/adyssonferreira/rinha-de-backend-2024-q1/model"
+	"github.com/adyssonferreira/rinha-de-backend-2024-q1/repository"
+	"github.com/gofiber/fiber/v2"
+)
 
-		Tansactions: []model.Tansaction{
-			{
-				Value:       10,
-				Type:        "C",
-				Description: "descricao",
-				CreateAt:    "2024-01-17T02:34:38.543030Z",
-			},
-			{
-				Value:       20,
-				Type:        "C",
-				Description: "descricao 2",
-				CreateAt:    "2024-01-17T02:34:38.543030Z",
-			},
-		},
+func GetStatement(c *fiber.Ctx) error {
+
+	client_id := c.Params("id")
+
+	client, err := repository.FindClientById(client_id)
+
+	// Client not found
+	if client == nil && err == nil {
+		return fiber.NewError(fiber.StatusNotFound, "Client not found")
 	}
 
-	return statement
+	transactions, err := repository.FindTransactionsByClientId(client_id)
+
+	// Internal error
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "Error on find transations")
+	}
+
+	statement := model.Statement{
+		Balance: model.Balance{
+			Date:  time.Now().Format(time.RFC3339),
+			Total: client.Balance,
+			Limit: client.Limit,
+		},
+
+		Tansactions: transactions,
+	}
+
+	return c.JSON(statement)
 
 }

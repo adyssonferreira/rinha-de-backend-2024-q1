@@ -14,10 +14,7 @@ func main() {
 		ServerHeader: "Fiber",
 	})
 
-	app.Get("/clientes/:id/extrato", func(c *fiber.Ctx) error {
-		statement := handlers.GetStatement()
-		return c.JSON(statement)
-	})
+	app.Get("/clientes/:id/extrato", handlers.GetStatement)
 
 	app.Post("/clientes/:id/transacoes", handlers.ExecuteTransaction)
 

@@ -1,10 +1,10 @@
 package repository
 
 import (
-	"database/sql"
 	"errors"
 
 	"github.com/adyssonferreira/rinha-de-backend-2024-q1/model"
+	"github.com/jackc/pgx/v5"
 	_ "github.com/lib/pq"
 )
 
@@ -17,10 +17,10 @@ func FindClientById(id string) (*model.Client, error) {
 		return nil, errors.New("can't open database")
 	}
 
-	rows := db.QueryRow(contextt, "SELECT * FROM clients WHERE id = $1 LIMIT 1", id)
-	err = rows.Scan(&client.Id, &client.Nome, &client.Balance, &client.Limit)
+	err = db.QueryRow(contextt, "SELECT * FROM clients WHERE id = $1 LIMIT 1", id).Scan(&client.Id, &client.Nome, &client.Balance, &client.Limit)
 
-	if err == sql.ErrNoRows {
+	// NOT FOUND
+	if err == pgx.ErrNoRows {
 		return nil, nil
 	}
 
