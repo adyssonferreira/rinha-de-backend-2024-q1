@@ -14,7 +14,7 @@ var contextt = context.Background()
 func OpenDB() (*pgx.Conn, error) {
 
 	if conn == nil {
-		conn, err := pgx.Connect(context.Background(), "postgres://postgres:pass@localhost:5432/postgres")
+		conn, err := pgx.Connect(context.Background(), "postgres://postgres:pass@db:5432/postgres")
 		return conn, err
 	}
 
