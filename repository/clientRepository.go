@@ -17,8 +17,7 @@ func FindClientById(id string) (*model.Client, error) {
 		return nil, errors.New("can't open database")
 	}
 
-	rows := db.QueryRow("SELECT * FROM clients WHERE id = $1 LIMIT 1", id)
-
+	rows := db.QueryRow(contextt, "SELECT * FROM clients WHERE id = $1 LIMIT 1", id)
 	err = rows.Scan(&client.Id, &client.Nome, &client.Balance, &client.Limit)
 
 	if err == sql.ErrNoRows {
@@ -28,14 +27,17 @@ func FindClientById(id string) (*model.Client, error) {
 	return &client, nil
 }
 
-func UpdateBalance(client_id int, balance int) (sql.Result, error) {
+func UpdateBalance(client_id int, balance int) error {
 
 	db, err := OpenDB()
-
 	if err != nil {
-		return nil, errors.New("can't open database")
+		return err
 	}
 
-	return db.Exec("UPDATE clients SET balance = $1 WHERE id = $2", balance, client_id)
+	_, err = db.Exec(contextt, "UPDATE clients SET balance = $1 WHERE id = $2", balance, client_id)
+	if err != nil {
+		return err
+	}
 
+	return nil
 }

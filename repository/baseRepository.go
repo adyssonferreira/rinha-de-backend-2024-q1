@@ -1,19 +1,22 @@
 package repository
 
 import (
-	"database/sql"
+	"context"
+
+	"github.com/jackc/pgx/v5"
 
 	_ "github.com/lib/pq"
 )
 
-var db *sql.DB = nil
+var conn *pgx.Conn = nil
+var contextt = context.Background()
 
-func OpenDB() (*sql.DB, error) {
+func OpenDB() (*pgx.Conn, error) {
 
-	if db == nil {
-		db, err := sql.Open("postgres", "host=localhost port=5432 user=postgres password=pass dbname=postgres sslmode=disable")
-		return db, err
+	if conn == nil {
+		conn, err := pgx.Connect(context.Background(), "postgres://postgres:pass@localhost:5432/postgres")
+		return conn, err
 	}
 
-	return db, nil
+	return conn, nil
 }

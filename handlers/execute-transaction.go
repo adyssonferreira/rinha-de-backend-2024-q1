@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/adyssonferreira/rinha-de-backend-2024-q1/constants"
 	"github.com/adyssonferreira/rinha-de-backend-2024-q1/repository"
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,15 +17,16 @@ type Payload struct {
 	Description string `json:"descricao"`
 }
 
-const DEBIT_TRANSACTION = "d"
-const CREDIT_TRANSACTION = "c"
-
 func ExecuteTransaction(c *fiber.Ctx) error {
 
 	client_id := c.Params("id")
 
 	var payload Payload
 	c.BodyParser(&payload)
+
+	if len(payload.Description) > 10 {
+		return fiber.NewError(fiber.StatusBadRequest, "Description to long")
+	}
 
 	client, err := repository.FindClientById(client_id)
 
@@ -38,9 +40,9 @@ func ExecuteTransaction(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Internal error")
 	}
 
-	if payload.Type == CREDIT_TRANSACTION {
+	if payload.Type == constants.CREDIT_TRANSACTION {
 		client.Balance += payload.Value
-	} else if payload.Type == DEBIT_TRANSACTION {
+	} else if payload.Type == constants.DEBIT_TRANSACTION {
 
 		newBalance := client.Balance - payload.Value
 
@@ -52,14 +54,14 @@ func ExecuteTransaction(c *fiber.Ctx) error {
 
 	}
 
-	_, err = repository.CreateTransaction(client.Id, payload.Value, payload.Type, payload.Description)
+	err = repository.CreateTransaction(client.Id, payload.Value, payload.Type, payload.Description)
 
 	// Internal error
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "Error on create transation")
 	}
 
-	_, err = repository.UpdateBalance(client.Id, client.Balance)
+	err = repository.UpdateBalance(client.Id, client.Balance)
 
 	// Internal error
 	if err != nil {
