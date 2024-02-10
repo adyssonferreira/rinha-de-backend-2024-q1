@@ -6,9 +6,6 @@ import (
 )
 
 func main() {
-
-	//ctx := context.Background()
-
 	app := fiber.New(fiber.Config{
 		AppName:      "Rinha de Backend",
 		ServerHeader: "Fiber",
@@ -18,5 +15,5 @@ func main() {
 
 	app.Post("/clientes/:id/transacoes", handlers.ExecuteTransaction)
 
-	app.Listen(":8082")
+	app.Listen(":9999")
 }
