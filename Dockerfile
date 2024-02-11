@@ -14,7 +14,6 @@ RUN  go build -o /rinha .
 # Use uma imagem mínima do alpine como base para a imagem final
 FROM alpine:latest
 
-
 WORKDIR /
 
 COPY --from=builder /rinha /rinha

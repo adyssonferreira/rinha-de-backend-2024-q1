@@ -37,5 +37,4 @@ func GetStatement(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(statement)
-
 }
